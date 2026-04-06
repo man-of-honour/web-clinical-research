@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Clinical Research App</title>
+</head>
+<body>
+    <h1>Приложение для клинических исследований</h1>
+
+    {% if errors %}
+        <div>
+            <h3>Ошибки:</h3>
+            <ul>
+                {% for error in errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+
+    {% if success_message %}
+        <div>
+            <h3>Успех:</h3>
+            <p>{{ success_message }}</p>
+        </div>
+    {% endif %}
+
+    <form method="post">
+        <div>
+            <label for="user_id">ID пользователя:</label>
+            <input
+                type="number"
+                id="user_id"
+                name="user_id"
+                value="{{ form_data.get('user_id', '') }}"
+            >
+        </div>
+
+        <br>
+
+        <div>
+            <label for="trial_id">Исследование:</label>
+            <select id="trial_id" name="trial_id">
+                <option value="">-- Выберите исследование --</option>
+                {% for trial in trials %}
+                    <option
+                        value="{{ trial['trial_id'] }}"
+                        {% if form_data.get('trial_id') == trial['trial_id']|string %}selected{% endif %}
+                    >
+                        {{ trial['trial_name'] }} (препарат: {{ trial['med'] }})
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <br>
+
+        <div>
+            <label for="condition_score">Оценка самочувствия:</label>
+            <input
+                type="number"
+                id="condition_score"
+                name="condition_score"
+                value="{{ form_data.get('condition_score', '') }}"
+            >
+        </div>
+
+        <br>
+
+        <div>
+            <label for="med">Препарат:</label>
+            <input
+                type="text"
+                id="med"
+                name="med"
+                value="{{ form_data.get('med', '') }}"
+            >
+        </div>
+
+        <br>
+
+        <button type="submit">Отправить</button>
+    </form>
+</body>
+</html>
