@@ -1,203 +1,294 @@
-# Приложение для клинических исследований
+# Clinical Research Web Application
 
-Аннотация: \
-Данный проект познакомит тебя с разработкой приложений на языке программирования Python с использованием веб-фреймворков или созданием чат-ботов, а также со взаимодействием с базой данных.
+A lightweight **Flask** web application for entering, validating, storing, and analyzing clinical trial data.
 
-## Содержание
-1. [Chapter I](#chapter-i) \
-   1.1. [Рекомендации к проекту](#рекомендации-к-проекту)
-2. [Chapter II](#chapter-ii) \
-   2.1. [Описание проекта](#описание-проекта)
-3. [Chapter III](#chapter-iii) \
-   [Разработка приложения](#разработка-приложения)\
-   3.1. [Задание 1](#интерфейс)\
-   3.2. [Задание 2](#редактирование-базы-данных)  
-   3.3. [Задание 3](#получение-данных) \
-   3.4. [Задание 4](#обработка-сохранение-данных)\
-   3.5. [Задание 5](#ответ-пользователю)
+This project was built as part of a Python and database practice assignment, then refined into a portfolio-ready project for GitHub.
 
+---
 
-## Введение 
-> День начался настолько прекрасно, что, казалось бы, ничто не могло его омрачить. Ничего, собственно, и не произошло. Ведь когда я проверял почту, то увидел заветное письмо от главврача.
->> **Стажер**
+## Overview
 
-> Привет, студент! \
-> Получил твое письмо с разработанной базой данных. Ты отлично поработал! Определенно вижу твой интерес, поэтому отправляю тебе следующий этап нашего масштабного проекта. Он предполагает разработку приложения для клинических исследований, которое будет взаимодействовать с пользователем, обрабатывать и сохранять данные, а также проводить простой анализ введенных данных. Приложение может быть как веб-приложением, так и чат-ботом.\
-> Все подробности изложены ниже. 
+The application allows a user to:
 
-> Сообщи мне, как завершишь работу. \
-> Посылаю в космос заговор на удачу! 
+- enter a **patient ID**
+- select a **clinical trial** from the database
+- enter a **condition score** on a scale from `0` to `100`
+- specify a **drug**
+- validate the submitted data
+- save the record into the database
+- calculate the average `condition_score` for the selected drug within the selected trial
+- determine whether the submitted condition score falls within the normal range
 
-> С уважением и добрыми пожеланиями, \
->заведующий ~~кафедры~~ кластера.
->> **Главврач**
+The final version of the application is implemented in **Flask** and works with an existing **SQLite** database from the previous project.
 
-> Ну кому, как не мне, перестать сидеть и начать действовать? Пора пролить на это дело чистую водицу!
->> **Стажер**
+---
 
-## Chapter I
-### Рекомендации к проекту
-Как учиться в «Школе 21»:  
-- На протяжении всего курса ты будешь самостоятельно добывать информацию. Пользуйся всеми доступными средствами поиска информации, к примеру, Google и GigaChat. Будь внимателен к источникам информации: проверяй, думай, анализируй, сравнивай. 
-- Взаимообучение (P2P, Peer-to-Peer) — это процесс, при котором учащиеся обмениваются знаниями и опытом, выступая одновременно в роли учителей и учеников. Этот подход позволяет учиться не только у преподавателя, но и друг у друга, что способствует более глубокому пониманию материала.
-- Не стесняйся просить помощи: вокруг тебя такие же пиры, которые тоже проходят этот путь впервые. Не бойся откликаться на просьбы о помощи. Твой опыт ценен и полезен, смело делись им с другими участниками. 
-- Не списывай, а если пользуешься помощью — всегда разбирайся до конца, почему, как и зачем. Иначе твое обучение не будет иметь никакого смысла. 
-- Если ты на чем-то застрял и кажется, что все уже перепробовал, но по-прежнему непонятно, куда идти, — просто передохни! Поверь, этот совет помогал многим разработчикам в их работе. Проветрись, перезагрузи голову, и, возможно, в следующий раз тебе наконец придет нужное решение!
-- Важен не только результат обучения, но и сам процесс. Нужно не просто решить задачу, а понять, КАК ее решить.
+## Features
 
-Как работать с проектом: 
-- Вся работа выполняется на виртуальной машине. Для начала ее нужно настроить, воспользовавшись [инструкцией](https://applicant.21-school.ru/guide_vm_med). Далее запустить виртуальную машину и продолжать выполнять работу над проектом там.
-- Перед выполнением проект необходимо склонировать с GitLab в одноименный репозиторий.
-- Все файлы с кодом необходимо создавать в папке src склонированного репозитория.
-- После клонирования проекта необходимо создать ветку `develop` и вести разработку в ней. После этого пушить в GitLab также нужно ветку `develop`.
-- В твоей директории не должно быть иных файлов, кроме тех, что обозначены в заданиях.
-- Если на твоем компьютере не развернута виртуальная машина, то необходимо ее развернуть, как ты делал в прошлом проекте. 
+- Simple web interface built with **Flask** and **HTML**
+- Server-side validation of all user input
+- Dynamic loading of trials from the database
+- Validation of drug choice for the selected trial
+- Storage of new measurements in the database
+- Automatic insertion of the current date for each measurement
+- Calculation of the average condition score for the selected drug in the selected trial
+- Calculation of a normal range defined as **±10%** of the average score
+- Feedback to the user indicating whether the patient's condition is within the normal range
 
-Дисклеймер: 
-- Наша команда не медики. Если ты будешь видеть в тексте медицинские неточности или ошибки, заранее просим у тебя прощения. Оставляй нам обратную связь, и мы все поправим!
-- Иногда повествование ведется в несколько шутливой форме, чтобы не было скучно. Однако, как ты и сам знаешь, юмор и шутки — субъективная вещь. Поэтому если каламбуры в данном тексте, по твоему мнению, попахивают батиным юмором, то, пожалуйста, просто прими это.
+---
 
-## Chapter II
+## Tech Stack
 
-### Описание проекта
+- **Python**
+- **Flask**
+- **SQLite**
 
-Основная цель проекта — создать приложение (веб-приложение или чат-бота), которое будет взаимодействовать с пользователем, обрабатывать и сохранять данные, а также проводить простой анализ введенных данных. Предполагаемое реализуемое приложение выполняет следующий функционал: 
-- запрашивает у пользователя:
-  - ID;
-  - выбор исследования из доступных;
-  - оценку самочувствия по 100-балльной шкале;
-  - принимаемый препарат (из двух вариантов: «Плацебо» или другой препарат, доступный в исследовании). 
-        `Примечание: в реальных условиях пациент не знает, принимает ли он плацебо или нет, здесь же для упрощения закроем на это глаза.`
-- анализирует введенные данные и сообщает пользователю, является ли его самочувствие нормальным для данного препарата в рамках исследования;
-- сохраняет всю информацию в базу данных из предыдущего проекта.
+---
 
-Разработка приложения осуществляется на языке программирования Python. Для его создания можно выбрать один из веб-фреймворков — `Django`, `FastAPI`, `Flask` — или создать чат-бота с использованием библиотек `pyTelegramBotAPI`, `aiogram`.
+## Project Structure
 
-Подсказки по выбору веб-фреймворка:
+```text
+.
+├── add_med.sql
+├── clinical_trials.db
+├── src
+│   ├── task1
+│   │   ├── app.py
+│   │   └── templates
+│   │       └── index.html
+│   ├── task2
+│   │   ├── app.py
+│   │   └── templates
+│   │       └── index.html
+│   ├── task3
+│   │   ├── app.py
+│   │   └── templates
+│   │       └── index.html
+│   ├── task4
+│   │   ├── app.py
+│   │   └── templates
+│   │       └── index.html
+│   └── task5
+│       ├── app.py
+│       └── templates
+│           └── index.html
+└── README.md
+```
 
-- **Django** — наиболее полный фреймворк для создания веб-приложений. Он включает в себя всё необходимое для работы с БД, написания логики и отображения в HTML. Имеет встроенную админку и множество расширений. Если ты хочешь быстро создать веб-сайт и использовать проверенные инструменты, Django — отличный выбор. Он использует свою ORM для работы с БД.
-- **FastAPI** — современный и популярный фреймворк, особенно для создания API. Он очень гибкий и удобный для разработки backend-приложений. Стоит выбрать его, если хочешь освоить трендовый инструмент. Для работы с БД часто используют ORM SQLAlchemy (ту же, что и в первом проекте), либо отправляют SQL-запросы напрямую в БД без ORM.
-- **Flask** — легковесный фреймворк, который может быть при необходимости расширен. Он позволяет создавать как простые, так и сложные приложения. Если другие фреймворки по каким-то причинам не подошли, Flask может быть отличной альтернативой.
+---
 
-Подсказки по выбору библиотеки для работы с Telegram:
+## File Description
 
-- **pyTelegramBotAPI** — самый простой вариант для быстрой разработки Telegram-бота. В нем есть все необходимое для начала работы.
-- **aiogram** — асинхронная библиотека, которая эффективна при большом количестве пользователей. Требует понимания асинхронности в Python (async/await). Выбирай ее, если хочешь глубже погрузиться в разработку ботов и асинхронное программирование.
+- `add_med.sql` — SQL script for updating the database schema and filling the `med` field
+- `clinical_trials.db` — SQLite database used by the application
+- `src/task1` — basic interface and validation
+- `src/task2` — database modification step
+- `src/task3` — dynamic loading of trial data from the database
+- `src/task4` — saving validated user input
+- `src/task5` — final working version with analysis and user feedback
 
-После прохождения каждого задания весь код и файлы, необходимые для запуска проекта, нужно скопировать в директорию `src/taskN`, где N — номер задания.
+The final application is launched from `src/task5/app.py`.
 
+---
 
-В выполнении этого проекта тебе помогут небольшие видео о веб-разработке. Ты найдешь их в разделе Media или пройдя по ссылкам: 
+## Development Stages
 
-[Веб-разработка. Часть 1](https://platform.21-school.ru/media?file=05bd2043-bae9-4fe3-9898-d9c2e6394e4a)
+### Task 1 — Interface and Basic Validation
 
-[Веб-разработка. Часть 2](https://platform.21-school.ru/media?file=d04a43c4-f554-4276-8aa1-16eb35757892)
+At the first stage, the application provides a basic HTML form that allows the user to:
 
+- enter `user_id`
+- choose a clinical trial
+- enter `condition_score`
+- specify a drug
 
-## Chapter III
-### Разработка приложения 
+Validation rules:
 
-### Задание 1. Интерфейс
+- patient ID must be a non-negative integer
+- condition score must be between 0 and 100
+- drug field must not be empty
+- a trial must be selected
 
-Для выполнения задания тебе необходимо знать следующие темы: веб-фреймворки (Django/FastAPI/Flask), HTML, формы, валидация данных, Python, работа с чат-ботами.
+### Task 2 — Database Update
 
-Первым делом необходимо реализовать интерфейс взаимодействия с пользователем. Ты сам выбираешь, как будет выглядеть интерфейс, но при этом:
-- Он должен позволять пользователю:
-    - ввести ID пользователя;
-    - выбрать исследование из списка доступных (на данном этапе список можно «захардкодить», то есть зафиксировать неизменным в коде);
-    - ввести оценку самочувствия по 100-балльной шкале;
-    - выбрать принимаемый препарат (из двух вариантов: «Плацебо» или другой препарат, доступный в исследовании).
-- Интерфейс должен быть понятным и не содержать лишних элементов.
-- Все данные должны сразу же валидироваться:
-    - ID должен быть неотрицательным числом.
-    - Проверка, что выбран действительно элемент из списка исследований.
-    - Оценка самочувствия должна быть от 0 до 100.
-    - Препарат должен быть строкой и соответствовать допустимым вариантам.
-- При вводе невалидных данных необходимо сразу сообщить о неверности введенных данных и попросить пользователя ввести корректные данные.
+At this stage, the database schema is extended.
 
-В результате должен быть рабочий код, который отображает элементы интерфейса пользователю при запросе. Интерфейс должен позволять вводить данные и валидировать данные. Весь код проекта скопируй в директорию `src/task1`.
+A new column is added to the `trials` table:
 
-_Рекомендации_:
-- Для веб-приложения:
-    - Создай HTML-страницу с полями ввода.
-    - Используй шаблонизатор (Django Templates или Jinja2) для динамического отображения списка исследований.
-- Для чат-бота:
-    - Реализуй последовательность сообщений, на которые пользователь должен ответить.
-    - Используй клавиатуру бота для удобного выбора из списка (если поддерживается библиотекой).
+```sql
+ALTER TABLE trials ADD COLUMN med VARCHAR(100);
+```
 
-### Задание 2. Редактирование базы данных
+After that, the field is populated with actual drug names for the existing trials.
 
-Для выполнения задания тебе необходимо знать следующие темы: SQL, DDL, миграции БД, ORM, изменение структуры таблиц.
+The SQL script is stored in:
 
-После реализации интерфейса следует добавить новое поле в базу данных для хранения информации о тестируемом препарате в каждом исследовании. 
+- `add_med.sql`
 
-Для этого нужно в таблицу trials добавить столбец med типа VARCHAR(100). Это будет название тестируемого препарата в исследовании. Таким образом, в каждом исследовании будут использоваться два препарата: med и «Плацебо».
+### Task 3 — Loading Data from the Database
 
-Способы выполнения:
+The list of available trials is no longer hardcoded.
 
-1.	SQL-запрос:
-    - Напиши SQL-запрос для добавления столбца.
-    - Сохрани запрос в файле `add_med.sql` в корне проекта.
-2.	Через ORM и миграции:
-    - Используй ORM выбранного фреймворка и систему миграций для изменения структуры базы данных.
-    - Автоматически сгенерируй миграцию (скрипт изменения БД).
-    - Добавь файл `add_med.txt`, в котором укажи расположение миграции на добавление столбца.
+Instead, the application retrieves the following fields directly from the `trials` table:
 
-Результатом будет файл `add_med.txt` или `add_med.sql`. Весь код проекта скопируй в директорию `src/task2`.
+- `trial_id`
+- `trial_name`
+- `med`
 
-_Рекомендации по миграциям_:
-- Если используешь Django, создай модель с новым полем и сгенерируй миграцию с помощью `python manage.py makemigrations`.
-- В Flask, или FastAPI, или чат-боте с SQLAlchemy также можно использовать механизмы миграций (например, Alembic).
+Additional validation is implemented:
 
-### Задание 3. Получение данных
+- for a selected trial, the drug must be either:
+  - `Placebo`
+  - or the `med` assigned to that trial
 
-Для выполнения задания тебе необходимо знать следующие темы: SQL, SELECT запросы, ORM, работа с БД, обработка результатов запросов.
+### Task 4 — Saving Data
 
-Для формирования списка доступных исследований тебе необходимо динамически получать данные из базы данных, выполнив следующие вводные:
-- запроси из базы данных все ID, названия и тестируемые препараты исследований с помощью SELECT;
-- сформируй список доступных исследований на основе полученных данных;
-- при выборе принимаемого препарата необходимо проверить, что препарат относится к данному исследованию или что это «Плацебо».
+After successful validation, the application:
 
-**Важно**: запрашивать все строки из таблицы БД не всегда оптимально, особенно если данных много. Однако для целей данного проекта можно пренебречь этим и загрузить все исследования, так как объем данных невелик.
+- checks whether the patient exists in the `patients` table
+- saves a new record into the `measurements` table
 
-В результате интерфейс пользователя должен предлагать пользователю выбрать доступное исследование, и при вводе принимаемого препарата должна быть проверка, что препарат относится к выбранному исследованию. Весь код проекта скопируй в директорию `src/task3`.
+Saved fields:
 
-_Рекомендации_:
-- Используй ORM или прямые SQL-запросы для получения данных.
-- Обнови интерфейс (веб-страницу или бота) так, чтобы список исследований был актуальным и соответствовал данным из базы.
+- `patient_id`
+- `trial_id`
+- `measurement_date`
+- `drug`
+- `condition_score`
 
-### Задание 4. Обработка и сохранение данных
+The measurement date is inserted automatically as the current date.
 
-Для выполнения задания тебе необходимо знать следующие темы: SQL, INSERT запросы, ORM, обработка ошибок БД, валидация данных.
+### Task 5 — Analysis and User Feedback
 
-Следующий этап создания приложения предполагает сохранение введенных пользователем данных в базу данных. Прими во внимание следующие условия:
-- После валидации и обработки данных сохрани новую запись в таблицу measurements с введенными значениями.
-- Убедись, что все поля заполнены корректно и соответствуют типам данных в таблице.
+After saving the record, the application:
 
-В результате приложение должно уметь сохранять введенные пользователем данные. Весь код проекта скопируй в директорию `src/task4`.
+- calculates the average `condition_score` for the selected drug within the selected trial
+- calculates the normal range as ±10% of the average
+- compares the submitted score with this range
+- informs the user whether the condition score is within the normal range
 
-_Рекомендации_:
-- Используй ORM для удобного сохранения данных в базу.
-- Обработай возможные ошибки при сохранении (например, проблемы с подключением к базе данных).
+---
 
-### Задание 5. Ответ пользователю
+## Database Schema
 
-Для выполнения задания тебе необходимо знать следующие темы: SQL, агрегатные функции (AVG), математические расчеты, условная логика.
+The project uses the SQLite database `clinical_trials.db`.
 
-Завершающим действием следует проанализировать введенные данные и сообщить пользователю результат. Для этого необходимо:
-- рассчитать среднее значение поля condition_score для данного препарата в рамках выбранного исследования;
-- определить диапазон нормы: ±10% от среднего значения;
-- сравнить введенную пользователем оценку самочувствия с диапазоном нормы;
-- сообщить пользователю, выходит ли его самочувствие за пределы нормы или нет.
+### `patients`
 
-В результате, после того как пользователь ввел данные, приложение должно проверять, входит ли самочувствие в норму или нет. Пользователь должен увидеть сообщение о его самочувствии. Весь код проекта скопируй в директорию `src/task5`.
+| Column | Description |
+|---|---|
+| `patient_id` | Unique patient identifier |
+| `name` | Patient name |
+| `age` | Patient age |
+| `gender` | Patient gender |
+| `condition` | Patient condition |
 
-_Рекомендации_:
-- Используй агрегатные функции (например, AVG) для расчета среднего значения.
-- Выполни соответствующий запрос к базе данных.
-- Оформи ответ пользователю в удобном и понятном виде.
+### `trials`
 
-> Ура, работа над приложением завершена! Ждем,что будет дальше...
->> **Стажер**
+| Column | Description |
+|---|---|
+| `trial_id` | Unique trial identifier |
+| `trial_name` | Trial name |
+| `start_date` | Trial start date |
+| `end_date` | Trial end date |
+| `med` | Drug used in the trial |
 
-💡 [Нажми сюда](http://opros.so/jSVV1), **чтобы поделиться с нами обратной связью на этот проект**. Это анонимно и поможет команде Продукта сделать твоё обучение лучше.
+### `measurements`
+
+| Column | Description |
+|---|---|
+| `measurement_id` | Unique measurement identifier |
+| `patient_id` | ID of the patient |
+| `trial_id` | ID of the trial |
+| `measurement_date` | Date of the measurement |
+| `drug` | Drug specified by the user |
+| `condition_score` | Self-reported condition score |
+
+---
+
+## How to Run
+
+1. Install Flask:
+
+```bash
+python -m pip install flask
+```
+
+2. Make sure the database file is located in the project root.
+
+Required file:
+
+- `clinical_trials.db`
+
+3. Run the final version of the application:
+
+```bash
+python src/task5/app.py
+```
+
+4. Open the application in your browser:
+
+```text
+http://127.0.0.1:5000
+```
+
+---
+
+## Example Workflow
+
+- The user enters a patient ID.
+- The user selects a clinical trial.
+- The user enters a condition score.
+- The user specifies a drug.
+- The application validates the submitted data.
+
+If the data is valid:
+
+- the record is saved to the database
+- the average score for the selected drug is calculated
+- the normal range is calculated
+- the result of the analysis is displayed to the user
+
+---
+
+## Implemented Functionality
+
+- web interface built with Flask
+- HTML form for user input
+- validation of patient ID, trial selection, condition score, and drug
+- dynamic loading of trials from the database
+- validation of drug-trial consistency
+- patient existence check before saving
+- saving new records into the `measurements` table
+- automatic insertion of the current date
+- calculation of average `condition_score`
+- calculation of a normal range based on ±10%
+- user feedback indicating whether the submitted score is within the normal range
+
+---
+
+## Notes
+
+This project was originally created as an educational assignment focused on:
+
+- Python web development
+- working with relational databases
+- SQL queries
+- validation and processing of user input
+- simple analytics based on stored clinical trial data
+
+For portfolio purposes, the project demonstrates:
+
+- backend logic in Flask
+- interaction with SQLite
+- form handling and validation
+- database read/write operations
+- basic analytical processing in a medical-data context
+
+---
+
+## Author
+
+Created by Filipp Ananishnev as part of a Python and database practice project.
+
+The project is presented in this repository as a portfolio piece focused on the intersection of medicine and IT.
